@@ -86,17 +86,11 @@ WHERE
 
 ---
 
-## 📂 Repositório Comparativo
-
-A análise linha-a-linha dos códigos `.sql` e `.yml` gerados pela IA versus os entregues manualmente está disponível [aqui](#) (link a ser atualizado com o repositório GitHub específico).
-
----
-
 ## ✅ Conclusão
 
-Apesar de auxiliar em tarefas simples, a IA atualmente **não é capaz de gerar scripts DBT prontos para produção**. O esforço de engenharia ainda é crucial para:
+Apesar de auxiliar em tarefas simples, a IA atualmente **não é capaz de gerar scripts DBT prontos para produção**. O esforço do time ainda é crucial para:
 
 - Estruturação correta do projeto;
 - Governança de metadados;
 - Implementação de lógica de carga;
-- Aplicação de padrões de qualidade exigidos em ambientes corporativos.
+- Aplicação de padrões de qualidade exigidos em ambientes produtivos;
