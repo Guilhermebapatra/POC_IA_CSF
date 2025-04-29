@@ -1,0 +1,118 @@
+models:
+  - name: FATURA_CANAIS_TB_EXTRATO_DETALHE
+    description: "Descrição do modelo"
+    config:
+      docs:
+        show: true
+      contract:
+        enforced: true
+      labels: {
+        "schedule_name": "",
+        "data_classification": "",
+        "partitioned_table": "",
+        "clustered_table": "",
+        "update_frequency": "",
+        "load_type": "",
+        "data_retention": "",
+        "number_pit": ""
+      }
+      tags: []
+      materialized: table
+    meta:
+      classificação: ""
+      criticidade: ""
+      periodicidade: ""
+      hora: ""
+      area_solicitante: ""
+      owner: ""
+      pecs_predecessoras: ""
+      pits_predecessoras: ""
+      predecessores: ""
+      sucessores: ""
+      pecs_sucessoras: ""
+
+    columns:
+      - name: cycle_date
+        data_type: "DATE"
+        description: "Descrição da coluna"
+        meta:
+          business_logic: ""
+          pii: false
+      - name: cpf
+        data_type: "STRING"
+        description: "Descrição da coluna"
+        meta:
+          business_logic: ""
+          pii: false
+      - name: conta
+        data_type: "STRING"
+        description: "Descrição da coluna"
+        meta:
+          business_logic: ""
+          pii: false
+      - name: cartao
+        data_type: "STRING"
+        description: "Descrição da coluna"
+        meta:
+          business_logic: ""
+          pii: false
+      - name: trxn_date
+        data_type: "TIMESTAMP"
+        description: "Descrição da coluna"
+        meta:
+          business_logic: ""
+          pii: false
+      - name: descr_1
+        data_type: "STRING"
+        description: "Descrição da coluna"
+        meta:
+          business_logic: ""
+          pii: false
+      - name: descr_2
+        data_type: "STRING"
+        description: "Descrição da coluna"
+        meta:
+          business_logic: ""
+          pii: false
+      - name: amt_trxn
+        data_type: "NUMERIC"
+        description: "Descrição da coluna"
+        meta:
+          business_logic: ""
+          pii: false
+      - name: serno
+        data_type: "NUMERIC"
+        description: "Descrição da coluna"
+        meta:
+          business_logic: ""
+          pii: false
+      - name: caccserno
+        data_type: "NUMERIC"
+        description: "Descrição da coluna"
+        meta:
+          business_logic: ""
+          pii: false
+      - name: dt_carga
+        data_type: "TIMESTAMP"
+        description: "Descrição da coluna"
+        meta:
+          business_logic: ""
+          pii: false
+      - name: nm_arqori
+        data_type: "STRING"
+        description: "Descrição da coluna"
+        meta:
+          business_logic: ""
+          pii: false
+      - name: nm_prodfat
+        data_type: "STRING"
+        description: "Descrição da coluna"
+        meta:
+          business_logic: ""
+          pii: false
+      - name: id_emprs
+        data_type: "NUMERIC"
+        description: "Descrição da coluna"
+        meta:
+          business_logic: ""
+          pii: false

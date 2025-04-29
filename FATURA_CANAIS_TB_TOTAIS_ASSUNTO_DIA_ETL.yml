@@ -1,0 +1,94 @@
+models:
+  - name: FATURA_CANAIS_TB_TOTAIS_ASSUNTO_DIA_ETL
+    description: "Descrição do modelo"
+    config:
+      docs:
+        show: true
+      contract:
+        enforced: true
+      labels: {
+        "schedule_name": "",
+        "data_classification": "",
+        "partitioned_table": "",
+        "clustered_table": "",
+        "update_frequency": "",
+        "load_type": "",
+        "data_retention": "",
+        "number_pit": ""
+      }
+      tags: []
+      materialized: table
+    meta:
+      classificação: ""
+      criticidade: ""
+      periodicidade: ""
+      hora: ""
+      area_solicitante: ""
+      owner: ""
+      pecs_predecessoras: ""
+      pits_predecessoras: ""
+      predecessores: ""
+      sucessores: ""
+      pecs_sucessoras: ""
+
+    columns:
+      - name: dt_totalassunetl
+        data_type: "DATE"
+        description: "Descrição da coluna"
+        meta:
+          business_logic: ""
+          pii: false
+      - name: id_assunnegocetl
+        data_type: "NUMERIC"
+        description: "Descrição da coluna"
+        meta:
+          business_logic: ""
+          pii: false
+      - name: dl_resultgroupby
+        data_type: "STRING"
+        description: "Descrição da coluna"
+        meta:
+          business_logic: ""
+          pii: false
+      - name: qt_totalassunorietl
+        data_type: "NUMERIC"
+        description: "Descrição da coluna"
+        meta:
+          business_logic: ""
+          pii: false
+      - name: qt_totalassundestetl
+        data_type: "NUMERIC"
+        description: "Descrição da coluna"
+        meta:
+          business_logic: ""
+          pii: false
+      - name: nm_arqori
+        data_type: "STRING"
+        description: "Descrição da coluna"
+        meta:
+          business_logic: ""
+          pii: false
+      - name: nm_prodfat
+        data_type: "STRING"
+        description: "Descrição da coluna"
+        meta:
+          business_logic: ""
+          pii: false
+      - name: nm_emprs
+        data_type: "STRING"
+        description: "Descrição da coluna"
+        meta:
+          business_logic: ""
+          pii: false
+      - name: dt_iniciarga
+        data_type: "TIMESTAMP"
+        description: "Descrição da coluna"
+        meta:
+          business_logic: ""
+          pii: false
+      - name: dt_fimcarga
+        data_type: "TIMESTAMP"
+        description: "Descrição da coluna"
+        meta:
+          business_logic: ""
+          pii: false

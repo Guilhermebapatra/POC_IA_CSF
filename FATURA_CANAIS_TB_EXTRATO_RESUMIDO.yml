@@ -1,0 +1,148 @@
+models:
+  - name: FATURA_CANAIS_TB_EXTRATO_RESUMIDO
+    description: "Descrição do modelo"
+    config:
+      docs:
+        show: true
+      contract:
+        enforced: true
+      labels: {
+        "schedule_name": "",
+        "data_classification": "",
+        "partitioned_table": "",
+        "clustered_table": "",
+        "update_frequency": "",
+        "load_type": "",
+        "data_retention": "",
+        "number_pit": ""
+      }
+      tags: []
+      materialized: table
+    meta:
+      classificação: ""
+      criticidade: ""
+      periodicidade: ""
+      hora: ""
+      area_solicitante: ""
+      owner: ""
+      pecs_predecessoras: ""
+      pits_predecessoras: ""
+      predecessores: ""
+      sucessores: ""
+      pecs_sucessoras: ""
+
+    columns:
+      - name: cycle_date
+        data_type: "DATE"
+        description: "Descrição da coluna"
+        meta:
+          business_logic: ""
+          pii: false
+      - name: cpf
+        data_type: "STRING"
+        description: "Descrição da coluna"
+        meta:
+          business_logic: ""
+          pii: false
+      - name: conta
+        data_type: "STRING"
+        description: "Descrição da coluna"
+        meta:
+          business_logic: ""
+          pii: false
+      - name: serno
+        data_type: "NUMERIC"
+        description: "Descrição da coluna"
+        meta:
+          business_logic: ""
+          pii: false
+      - name: acc_serno
+        data_type: "NUMERIC"
+        description: "Descrição da coluna"
+        meta:
+          business_logic: ""
+          pii: false
+      - name: billing_date_ini
+        data_type: "DATE"
+        description: "Descrição da coluna"
+        meta:
+          business_logic: ""
+          pii: false
+      - name: billing_date_fim
+        data_type: "DATE"
+        description: "Descrição da coluna"
+        meta:
+          business_logic: ""
+          pii: false
+      - name: total_credits
+        data_type: "NUMERIC"
+        description: "Descrição da coluna"
+        meta:
+          business_logic: ""
+          pii: false
+      - name: total_debits
+        data_type: "NUMERIC"
+        description: "Descrição da coluna"
+        meta:
+          business_logic: ""
+          pii: false
+      - name: total_paymetns
+        data_type: "NUMERIC"
+        description: "Descrição da coluna"
+        meta:
+          business_logic: ""
+          pii: false
+      - name: opening_balance
+        data_type: "NUMERIC"
+        description: "Descrição da coluna"
+        meta:
+          business_logic: ""
+          pii: false
+      - name: closing_balance
+        data_type: "NUMERIC"
+        description: "Descrição da coluna"
+        meta:
+          business_logic: ""
+          pii: false
+      - name: mindueamount
+        data_type: "NUMERIC"
+        description: "Descrição da coluna"
+        meta:
+          business_logic: ""
+          pii: false
+      - name: instalment_amt
+        data_type: "NUMERIC"
+        description: "Descrição da coluna"
+        meta:
+          business_logic: ""
+          pii: false
+      - name: dt_carga
+        data_type: "TIMESTAMP"
+        description: "Descrição da coluna"
+        meta:
+          business_logic: ""
+          pii: false
+      - name: cd_barrafatura
+        data_type: "STRING"
+        description: "Descrição da coluna"
+        meta:
+          business_logic: ""
+          pii: false
+      - name: nm_arqori
+        data_type: "STRING"
+        description: "Descrição da coluna"
+        meta:
+          business_logic: ""
+          pii: false
+      - name: nm_prodfat
+        data_type: "STRING"
+        description: "Descrição da coluna"
+        meta:
+          business_logic: ""
+          pii: false
+      - name: id_emprs
+        data_type: "NUMERIC"
+        description: "Descrição da coluna"
+        meta:
+          business_logic: ""
+          pii: false

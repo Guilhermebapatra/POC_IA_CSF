@@ -1,0 +1,81 @@
+models:
+  - name: tb_totais_assunto_dia_etl
+    description:
+    config:
+      docs:
+        show: true
+      contract:
+        enforced: true
+      labels: {
+        "schedule_name": "",
+        "data_classification": "",
+        "partitioned_table": "",
+        "clustered_table": "",
+        "update_frequency": "",
+        "load_type": "",
+        "data_retention": "",
+        "number_pit": ""
+      }
+      tags: []
+      materialized: table
+    meta:
+      classificação:
+      criticidade:
+      periodicidade:
+      hora:
+      area_solicitante:
+      owner:
+      pecs_predecessoras:
+      pits_predecessoras:
+      predecessores:
+      sucessores:
+      pecs_sucessoras:
+    columns:
+      - name: DATA_CORTE
+        data_type: DATE
+        description:
+        meta:
+          business_logic:
+          pii:
+      - name: ID_ASSUNNEGOCETL
+        data_type: INTEGER
+        description:
+        meta:
+          business_logic:
+          pii:
+      - name: DL_RESULTGROUPBY
+        data_type: STRING
+        description:
+        meta:
+          business_logic:
+          pii:
+      - name: QUANTIDADE_FATURAS_PROCESSADA_in
+        data_type: INTEGER
+        description:
+        meta:
+          business_logic:
+          pii:
+      - name: NOME_ARQUIVO
+        data_type: STRING
+        description:
+        meta:
+          business_logic:
+          pii:
+      - name: PRODUTO
+        data_type: STRING
+        description:
+        meta:
+          business_logic:
+          pii:
+      - name: EMPRESA
+        data_type: STRING
+        description:
+        meta:
+          business_logic:
+          pii:
+      - name: DH_FIM_CARGA
+        data_type: TIMESTAMP
+        description:
+        meta:
+          business_logic:
+          pii:

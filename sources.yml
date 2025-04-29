@@ -1,0 +1,15 @@
+version: 2
+sources:
+  - name: bigquery
+    schema: dataset
+    tables:
+      - name: FF_TRANSACAO_TSYS
+      - name: FF_BOLETO_PAGAMENTO_TSYS
+      - name: FF_TB_EXTRATO_DETALHE
+      - name: FF_TB_EXTRATO_RESUMIDO
+      - name: FF_CLIENTE_TSYS
+      - name: tb_seq_ctrl
+      - name: seq_SERNO_TRANSACAO
+      - name: FF_CONTA_TSYS
+      - name: TODS_TSYS_CACCOUNTS
+      - name: tb_seq_ctrl
