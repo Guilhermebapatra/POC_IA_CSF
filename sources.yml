@@ -1,15 +1,18 @@
 version: 2
+
 sources:
-  - name: bigquery
-    schema: dataset
+  - name: TESSERA_TRUSTED_EXTRATO_TAS
+    database: |
+      {%- if  target.name == "prd" -%} {{ var("tessera")["prd"] }}
+      {%- elif target.name == "hml" -%} {{ var("tessera")["hml"] }}
+      {%- else -%} {{ var("tessera")["crt"]  }}
+      {%- endif -%}
+    schema: trusted
+    description: Dataset trusted
+    meta:
+      owner: "@analytics_engineer"
     tables:
-      - name: FF_TRANSACAO_TSYS
-      - name: FF_BOLETO_PAGAMENTO_TSYS
-      - name: FF_TB_EXTRATO_DETALHE
-      - name: FF_TB_EXTRATO_RESUMIDO
-      - name: FF_CLIENTE_TSYS
-      - name: tb_seq_ctrl
-      - name: seq_SERNO_TRANSACAO
-      - name: FF_CONTA_TSYS
-      - name: TODS_TSYS_CACCOUNTS
-      - name: tb_seq_ctrl
+      - name: tsys_issuerstatement_conta
+      - name: tsys_issuerstatement_transacoes
+      - name: tsys_issuerstatement_cliente
+      - name: tsys_issuerstatement_codigo_barra

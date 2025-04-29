@@ -1,139 +1,49 @@
-{ config(materialized='table') }
+{{ config(materialized='table') }}
 
 with cte_ff_conta_tsys as (
   select
-    tipo_registro,
-    nm_seq_registro,
-    nm_conta,
-    flg_debito_automatico,
-    mascara_demosntrativo,
-    data_vencimento,
-    vl_pagamento_min,
-    saldo_fechado,
-    limite_total,
-    limite_total_disp,
-    limite_credito,
-    limite_credito_disp,
-    limite_credito_din,
-    limite_disp_dinheiro,
-    limite_bandeira,
-    sldo_dolar_americano,
-    sldo_real_brasileiro,
-    data_conversao,
-    tx_conversao_usd_brl,
-    sldo_crediario_pendente,
-    sldo_abertura,
-    debito_total,
-    credito_total,
-    pagamento_total,
-    tx_encargo_fin_sldo_rotativo,
-    tx_encargo_fin_compras_cred,
-    tx_encargo_fin_trns_cred_rot,
-    tx_encargo_fin_crediario,
-    tx_max_compra_rot_prox_ciclo,
-    tx_max_compra_cred_prox_ciclo,
-    tx_credito_max_prox_ciclo,
-    tx_max_cred_prox_ciclo,
-    cet_sldo_rotativo,
-    cet_cred_rotativo,
-    cet_atraso,
-    cet_crediario,
-    barra_insercao_1,
-    barra_insercao_2,
-    barra_insercao_3,
-    barra_insercao_4,
-    vl_desc_acumulado_ciclo,
-    vl_desc_acumulado_ano,
-    vl_folha_pagto_deb_direto,
-    saldo_remanescente,
-    limite_cred_pessoal,
-    op_emprestimo_pessoal,
-    limite_cred_pessoal_remanescente,
-    soma_outros_emprestimo,
-    vl_total_balance,
-    percent_vl_total_balance,
-    saldo_rotativo,
-    percent_saldo_rotativo,
-    vl_total_despesas,
-    percent_vl_total_despesas,
-    tx_valor,
-    percent_tx_valor,
-    vl_seguro,
-    percent_seguro,
-    vl_iof,
-    percent_iof,
-    vl_aiof,
-    percent_aiof,
-    encargo_juros,
-    percent_encargos_juros,
-    vl_total_balance_b,
-    percent_total_balance,
-    saldo_rotativo_b,
-    percent_saldo_rotativo_b,
-    vl_total_despesas_b,
-    percent_total_despesas,
-    vl_taxa,
-    percent_vl_taxa,
-    vl_seguro_b,
-    percent_seguro_b,
-    vl_iof_b,
-    percent_iof_b,
-    vl_aiof_b,
-    percent_aiof_b,
-    penalty_juros_encargos,
-    percent_penalty_juros_encargos,
-    vl_multa,
-    percent_vl_multa,
-    vl_mora,
-    percent_vl_mora,
-    vl_total_saldo_rotativo_b,
-    percent_total_saldo_rotativo_b,
-    saldo_rotativo_b_2,
-    percent_saldo_rotativo_b_2,
-    vl_total_desp_rotativo_b,
-    percent_total_desp_rotativo_b,
-    tx_vl_rotativo_b,
-    percent_tx_vl_rotativo_b,
-    vl_seguro_rotativo_b,
-    percent_seguro_rotativo_b,
-    vl_iof_rotativo_b,
-    percent_iof_rotativo_b,
-    vl_aiof_rotativo_b,
-    percent_aiof_rotativo_b,
-    encargo_juros_rotativo_b,
-    percent_encargo_juros_rotativo_b,
-    penalty_encargo_juros_rotativo_b,
-    percent_penalty_encargo_juros_rotativo_b,
-    vl_multa_rotativo_b,
-    percent_vl_multa_rotativo_b,
-    vl_mora_rotativo_b,
-    percent_vl_mora_rotativo_b,
-    vl_jurosmultaatual,
-    vl_jurosproxper,
-    vl_bonusmescel,
-    vl_bonusanualcel,
-    cd_perfilsegmt,
-    vl_jurostotalrotatb,
-    pc_jurosmultarotatb,
-    indicador_compulsorio,
-    valor_maximo_compulsorio,
-    vl_jurosremunprclafatura,
-    vl_maxjurosremunprclaproxciclo,
-    vl_cetjurosremunprclapronta,
-    vl_jurosremunfatura,
-    vl_jurosremunmaxproxciclo,
-    filler
-  from {{ source('bigquery', 'FF_CONTA_TSYS') }}
+      TIPO_REGISTRO
+    , NM_CONTA
+    , DATA_VENCIMENTO
+    , VL_PAGAMENTO_MIN
+    , SALDO_FECHADO
+    , SLDO_CREDIARIO_PENDENTE
+    , PAGAMENTO_TOTAL
+    , DEBITO_TOTAL
+    , CREDITO_TOTAL
+    , SLDO_ABERTURA
+    , DATA_CORTE
+    , PRODUTO
+    , EMPRESA
+    , NOME_ARQUIVO_RESUMIDO
+  from {{ ref('TB_WRK_EXTRATO_TAS__CONTA') }}
 ),
 
 cte_tods_tsys_caccounts as (
   select distinct
-    serno,
-    numberx,
-    totalcredits
-  from {{ source('bigquery', 'TODS_TSYS_CACCOUNTS') }}
-  where fg_current = 1
-    and type <> 'D'
+    cast(COD_CONTA_ORIGEM as decimal) as COD_CONTA_ORIGEM,
+    COD_CONTA
+  from {{ ref('TB_FAT__CONTA_CARTAO_HIST') }}
+  where TMP_FIM_VALIDADE is null
+),
+
+cte_exp_ff_conta_tsys as (
+  select distinct
+    TIPO_REGISTRO,
+    NM_CONTA as NM_CONTA,
+    format_date("%Y%m%d", DATA_VENCIMENTO) as DATA_VENCIMENTO,
+    VL_PAGAMENTO_MIN,
+    SALDO_FECHADO,
+    SLDO_CREDIARIO_PENDENTE,
+    PAGAMENTO_TOTAL,
+    DEBITO_TOTAL,
+    CREDITO_TOTAL,
+    SLDO_ABERTURA,
+    DATA_CORTE,
+    PRODUTO,
+    EMPRESA,
+    NOME_ARQUIVO_RESUMIDO,
+  from cte_ff_conta_tsys
 ),
 
 cte_trata_informacoes as (
@@ -141,17 +51,17 @@ cte_trata_informacoes as (
     tipo_registro,
     substr(data_vencimento, 5, 4) || substr(data_vencimento, 3, 2) || substr(data_vencimento, 1, 2) as out_cycle_date,
     trim(nm_conta) as conta_conta,
-    cast(format_date('%Y%m%d', date_sub(parse_date('%Y%m%d', cast({ var("DATA_CORTE") } as string)), interval 45 day)) as string) as billing_date_ini,
-    cast({ var("DATA_CORTE") } as string) as billing_date_fim,
-    cast(credito_total as bignumeric) / 100 as conta_total_credits,
-    cast(debito_total as bignumeric) / 100 as conta_total_debits,
-    cast(vl_pagamento_min as bignumeric) / 100 as conta_mindueamount,
-    cast(pagamento_total as bignumeric) / 100 as conta_total_paymetns,
-    cast(sldo_abertura as bignumeric) / 100 as conta_opening_balance,
-    cast(saldo_fechado as bignumeric) / 100 as conta_closing_balance,
-    cast(sldo_crediario_pendente as bignumeric) / 100 as conta_instalment_amt,
-    current_timestamp() as dt_carga
-  from cte_ff_conta_tsys
+    cast(format_date('%Y%m%d', date_sub(parse_date('%Y%m%d', cast(DATA_CORTE as string)), interval 45 day)) as string) as billing_date_ini,
+    cast(DATA_CORTE as string) as billing_date_fim,
+    cast(credito_total as decimal) as conta_total_credits,
+    cast(debito_total as decimal) as conta_total_debits,
+    cast(vl_pagamento_min as decimal) as conta_mindueamount,
+    cast(pagamento_total as decimal) as conta_total_paymetns,
+    cast(sldo_abertura as decimal) as conta_opening_balance,
+    cast(saldo_fechado as decimal) as conta_closing_balance,
+    cast(sldo_crediario_pendente as decimal) as conta_instalment_amt,
+    timestamp(datetime(current_timestamp(), 'America/Sao_Paulo')) as dt_carga
+  from cte_exp_ff_conta_tsys
 ),
 
 cte_join_arquivo_ods as (
@@ -168,10 +78,10 @@ cte_join_arquivo_ods as (
     exp.conta_closing_balance,
     exp.conta_instalment_amt,
     exp.dt_carga,
-    src.serno as serno_ods
+    src.COD_CONTA_ORIGEM as serno_ods
   from cte_trata_informacoes as exp
   left outer join cte_tods_tsys_caccounts as src
-    on src.numberx = exp.conta_conta
+    on src.COD_CONTA = exp.conta_conta
 ),
 
 cte_valida_fatura as (
@@ -190,27 +100,27 @@ cte_valida_fatura as (
     dt_carga,
     serno_ods,
     case
+      when serno_ods is not null and (conta_closing_balance > 2.48 or conta_closing_balance < 0.01) then 'TOTAL_FATURAS_VALIDAS_CARREGAR'
       when conta_closing_balance >= 0.01 and conta_closing_balance <= 2.48 then 'SALDO_FATURA_001_248'
       when serno_ods is null then 'CONTA_NAO_CADASTRO_ODS'
-      when serno_ods is not null and (conta_closing_balance > 2.48 or conta_closing_balance < 0.01) then 'TOTAL_FATURAS_VALIDAS_CARREGAR'
       else 'TOTAL_FATURAS_ARQUIVOS'
     end as route_group
   from cte_join_arquivo_ods
 )
 
 select
-  out_cycle_date,
-  conta_conta,
-  billing_date_ini,
-  billing_date_fim,
-  conta_total_credits,
-  conta_total_debits,
-  conta_mindueamount,
-  conta_total_paymetns,
-  conta_opening_balance,
-  conta_closing_balance,
-  conta_instalment_amt,
-  dt_carga,
-  serno_ods,
-  route_group
-from cte_valida_fatura;
+  OUT_CYCLE_DATE,
+  CONTA_CONTA,
+  BILLING_DATE_INI,
+  BILLING_DATE_FIM,
+  CONTA_TOTAL_CREDITS,
+  CONTA_TOTAL_DEBITS,
+  CONTA_MINDUEAMOUNT,
+  CONTA_TOTAL_PAYMETNS,
+  CONTA_OPENING_BALANCE,
+  CONTA_CLOSING_BALANCE,
+  CONTA_INSTALMENT_AMT,
+  DT_CARGA,
+  SERNO_ODS,
+  ROUTE_GROUP
+from cte_valida_fatura

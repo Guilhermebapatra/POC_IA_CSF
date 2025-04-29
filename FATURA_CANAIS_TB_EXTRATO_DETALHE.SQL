@@ -1,47 +1,77 @@
 {{
   config(
-    materialized='table',
-    post_hook=[
-      "update {{ source('bigquery', 'tb_seq_ctrl') }} set last_value = (select coalesce(max(serno), -1) from {{ this }}) where table_name = 'TB_EXTRATO_DETALHE' and collumn_name = 'SERNO';"
-    ]
+    materialized='incremental',
+    on_schema_change="append_new_columns",
+    unique_key = "SERNO"
   )
 }}
 
+{% set table_check_query %}
+    select 1
+    from `{{ this.schema }}.INFORMATION_SCHEMA.TABLES`
+    where table_name = 'TB_PID_EXTRATO_TAS__EXTRATO_DETALHE' and table_catalog = '{{this.database}}'
+{% endset %}
+
+{% set table_exists = run_query(table_check_query) %}
+{% set serno_inicial = -4760000000 %}
+{% set serno_minimo = serno_inicial %}
+
+{% if table_exists and table_exists.rows|length > 0 %}
+    {% set get_minimum_serno %}
+        select coalesce(min(SERNO), {{serno_inicial}})
+        from `{{ this.database }}.{{ this.schema }}.TB_PID_EXTRATO_TAS__EXTRATO_DETALHE`
+    {% endset %}
+    {% set result = run_query(get_minimum_serno) %}
+    {% if result and result.rows|length > 0 %}
+        {% set serno_minimo = result.columns[0].values()[0] %}
+    {% endif %}
+{% endif %}
+
 with
-cte_base as (
-    select * from {{ ref('FATURA_CANAIS_WRK') }}
-    where route_group != 'REJEITADO'
+CTE_BASE as (
+    select *
+    from {{ ref('TB_WRK_EXTRATO_TAS__CANAIS_ROUTER') }}
+    where route_group = 'RESUMIDO_DETALHE'
 ),
 
-cte_seq_start_value as (
-    select coalesce(max(last_value), 0) as start_value
-    from {{ source('bigquery', 'tb_seq_ctrl') }}
-    where table_name = 'TB_EXTRATO_DETALHE' and collumn_name = 'SERNO'
+VARS as (
+  select PRODUTO, EMPRESA, DATA_CORTE, NOME_ARQUIVO_RESUMIDO as NOME_ARQUIVO
+  from {{ ref("TB_WRK_EXTRATO_TAS__CONTA") }}
 ),
 
-cte_base_numbered as (
+CTE_JOIN_BASE_X_VARS as (
+    select *
+    from CTE_BASE
+    cross join vars
+),
+
+CTE_SEQ_START_VALUE as (
+    select {{serno_minimo}} as start_value
+),
+
+CTE_BASE_NUMBERED as (
     select
         *,
         row_number() over (order by transacao_conta, transacao_cartao, transacao_trxn_date) as rn
-    from cte_base
+    from CTE_JOIN_BASE_X_VARS
 ),
 
-cte_seq_gen as (
+CTE_SEQ_GEN as (
     select
-        (select start_value from cte_seq_start_value)
-        + row_number() over (order by transacao_conta, transacao_cartao, transacao_trxn_date) as serno_falso,
+        (select start_value from CTE_SEQ_START_VALUE)
+        - row_number() over (order by transacao_conta, transacao_cartao, transacao_trxn_date) as serno_falso,
         row_number() over (order by transacao_conta, transacao_cartao, transacao_trxn_date) as rn
-    from cte_base
+    from CTE_BASE
 ),
 
-cte_seq_gen_numbered as (
+CTE_SEQ_GEN_NUMBERED as (
     select
         serno_falso * -1 as serno_final,
         row_number() over (order by serno_falso) as rn
-    from cte_seq_gen
+    from CTE_SEQ_GEN
 ),
 
-cte_joined as (
+CTE_JOINED as (
     select
         b.cycle_date,
         b.cliente_cpf as cpf,
@@ -54,30 +84,30 @@ cte_joined as (
         s.serno_final as serno,
         b.serno_ods as caccserno,
         b.dt_carga,
-        '{{ var("NOME_ARQUIVO") }}' as nm_arqori,
-        '{{ var("PRODUTO") }}' as nm_prodfat,
+        NOME_ARQUIVO as nm_arqori,
+        PRODUTO as nm_prodfat,
         case
-            when upper('{{ var("EMPRESA") }}') = 'CARF' then 1
-            when upper('{{ var("EMPRESA") }}') = 'SAMS' then 6
+            when upper(EMPRESA) = 'CARF' then 1
+            when upper(EMPRESA) = 'SAMS' then 6
             else 2
         end as id_emprs
-    from cte_base_numbered as b
+    from CTE_BASE_NUMBERED as b
     inner join cte_seq_gen_numbered as s on b.rn = s.rn
 )
 
 select
-    cycle_date,
-    cpf,
-    conta,
-    transacao_cartao as cartao,
-    transacao_trxn_date as trxn_date,
-    descr_1,
-    transacao_descr_2 as descr_2,
-    transacao_amt_trxn as amt_trxn,
-    serno,
-    caccserno,
-    dt_carga,
-    nm_arqori,
-    nm_prodfat,
-    id_emprs
-from cte_joined;
+    CYCLE_DATE,
+    CPF,
+    CONTA,
+    transacao_cartao as CARTAO,
+    transacao_trxn_date as TRXN_DATE,
+    DESCR_1,
+    transacao_descr_2 as DESCR_2,
+    transacao_amt_trxn as AMT_TRXN,
+    SERNO,
+    CACCSERNO,
+    DT_CARGA,
+    NM_ARQORI,
+    NM_PRODFAT,
+    ID_EMPRS
+from CTE_JOINED

@@ -1,22 +1,21 @@
 models:
-  - name: FATURA_CANAIS_VALIDA_TRANSACAO_TRANSACAO_REJEITADA
-    description: ""
+  - name: TB_PID_EXTRATO_TAS__TRANSACAO_REJEITADA
+    description: "Tabela PID que armazena registros de transações que foram rejeitadas durante o processo de validação."
+    docs:
+      show: true
     config:
-      docs:
-        show: true
+      tags: []
       contract:
         enforced: true
-      labels: {
-        "schedule_name": "",
-        "data_classification": "",
-        "partitioned_table": "",
-        "clustered_table": "",
-        "update_frequency": "",
-        "load_type": "",
-        "data_retention": "",
-        "number_pit": ""
-      }
-      tags: []
+      labels:
+        schedule_name: wrk_fatura_canais
+        data_classification: internal
+        partitioned_table: 'false'
+        clustered_table: 'false'
+        update_frequency: daily
+        load_type: full
+        data_retention: na
+        number_pit: pec0277
       materialized: table
     meta:
       classificação: ""
@@ -33,43 +32,57 @@ models:
 
     columns:
       - name: TRANSACAO_CONTA
-        data_type: STRING
-        description: ""
+        data_type: string
+        description: "Número da Conta. Campo destinado ao número da conta no TSPrime."
         meta:
-          business_logic: ""
-          pii: false
+          business_logic: "Não se aplica"
+          pii: true
+        policy_tags:
+          - |
+            {%- if  target.name == "prd" -%} {{ var("policy_tags_ids")["prd"] }}
+            {%- elif target.name == "hml" -%} {{ var("policy_tags_ids")["hml"] }}
+            {%- else -%} {{ var("policy_tags_ids")["crt"]  }}
+            {%- endif -%}
+
 
       - name: TRANSACAO_CARTAO
-        data_type: STRING
-        description: ""
+        data_type: string
+        description: "Número do Cartão. Campo destinado ao número do cartão do titular do cartão."
         meta:
-          business_logic: ""
-          pii: false
+          business_logic: "Não se aplica"
+          pii: true
+        policy_tags:
+          - |
+            {%- if  target.name == "prd" -%} {{ var("policy_tags_ids")["prd"] }}
+            {%- elif target.name == "hml" -%} {{ var("policy_tags_ids")["hml"] }}
+            {%- else -%} {{ var("policy_tags_ids")["crt"]  }}
+            {%- endif -%}
+
 
       - name: TRANSACAOI_TRXN_DATE
-        data_type: STRING
-        description: ""
+        data_type: string
+        description: "Data da transação. Campo destinado à Data da Transação. ISO 8583."
         meta:
-          business_logic: ""
+          business_logic: "Não se aplica"
           pii: false
 
       - name: DESCR_1
-        data_type: STRING
-        description: ""
+        data_type: string
+        description: "Descrição 1."
         meta:
-          business_logic: ""
+          business_logic: "Não se aplica"
           pii: false
 
       - name: TRANSACAO_DESCR_2
-        data_type: STRING
-        description: ""
+        data_type: string
+        description: "Descrição da Transação. Campo destinado à descrição que foi lançada com a transação. Também conhecida como DBA do estabelecimento."
         meta:
-          business_logic: ""
+          business_logic: "Não se aplica"
           pii: false
 
       - name: TRANSACAO_AMT_TRXN
-        data_type: NUMERIC
-        description: ""
+        data_type: decimal
+        description: "Valor da transação com sinal aplicado (negativo para crédito, positivo para débito), na moeda do estabelecimento. ISO 8583."
         meta:
-          business_logic: ""
+          business_logic: "Não se aplica"
           pii: false

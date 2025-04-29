@@ -1,6 +1,6 @@
 models:
-  - name: TB_WRK_EXTRATO_TAS__TRANSACAO_ROUTER
-    description: "Tabela worker que gerencia a roteirização de transações para diferentes processos ou armazenamentos."
+  - name: TB_WRK_EXTRATO_TAS__EXTRATO_DETALHE_TMP
+    description: "Tabela temporária worker que armazena detalhes das transações que são diferente de 0, antes de serem consolidados na tabela final."
     docs:
       show: true
     config:
@@ -69,13 +69,6 @@ models:
       - name: TRANSACAO_AMT_TRXN
         data_type: decimal
         description: "Campo destinado ao valor da transação original na moeda do estabelecimento."
-        meta:
-          business_logic: "Não se aplica"
-          pii: false
-
-      - name: ROUTE_GROUP
-        data_type: string
-        description: "Indica a categoria de roteamento dos dados com base em critérios específicos."
         meta:
           business_logic: "Não se aplica"
           pii: false

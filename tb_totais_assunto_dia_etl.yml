@@ -1,81 +1,102 @@
 models:
-  - name: tb_totais_assunto_dia_etl
-    description:
+  - name: TB_PID_EXTRATO_TAS__TOTAIS_ASSUNTO_DIA_ETL
+    description: "Tabela PID que armazena totais diários de diferentes assuntos processados no ETL."
+    docs:
+      show: true
     config:
-      docs:
-        show: true
+      tags: []
       contract:
         enforced: true
-      labels: {
-        "schedule_name": "",
-        "data_classification": "",
-        "partitioned_table": "",
-        "clustered_table": "",
-        "update_frequency": "",
-        "load_type": "",
-        "data_retention": "",
-        "number_pit": ""
-      }
-      tags: []
+      labels:
+        schedule_name: wrk_fatura_canais
+        data_classification: internal
+        partitioned_table: 'false'
+        clustered_table: 'false'
+        update_frequency: daily
+        load_type: full
+        data_retention: na
+        number_pit: pec0277
       materialized: table
     meta:
-      classificação:
-      criticidade:
-      periodicidade:
-      hora:
-      area_solicitante:
-      owner:
-      pecs_predecessoras:
-      pits_predecessoras:
-      predecessores:
-      sucessores:
-      pecs_sucessoras:
+      classificação: ""
+      criticidade: ""
+      periodicidade: ""
+      hora: ""
+      area_solicitante: ""
+      owner: ""
+      pecs_predecessoras: ""
+      pits_predecessoras: ""
+      predecessores: ""
+      sucessores: ""
+      pecs_sucessoras: ""
+
     columns:
-      - name: DATA_CORTE
-        data_type: DATE
-        description:
+      - name: DT_TOTALASSUNETL
+        data_type: date
+        description: "Data do corte no formato DDMMYYYY"
         meta:
-          business_logic:
-          pii:
+          business_logic: "Não se aplica"
+          pii: false
+
       - name: ID_ASSUNNEGOCETL
-        data_type: INTEGER
-        description:
+        data_type: integer
+        description: "ID do tipo de transação."
         meta:
-          business_logic:
-          pii:
+          business_logic: "Não se aplica"
+          pii: false
+
       - name: DL_RESULTGROUPBY
-        data_type: STRING
-        description:
+        data_type: string
+        description: "Descrição da transação."
         meta:
-          business_logic:
-          pii:
-      - name: QUANTIDADE_FATURAS_PROCESSADA_in
-        data_type: INTEGER
-        description:
+          business_logic: "Não se aplica"
+          pii: false
+
+      - name: QT_TOTALASSUNORIETL
+        data_type: integer
+        description: "Quantidade total de assuntos oriundos do ETL."
         meta:
-          business_logic:
-          pii:
-      - name: NOME_ARQUIVO
-        data_type: STRING
-        description:
+          business_logic: "Não se aplica"
+          pii: false
+
+      - name: QT_TOTALASSUNDESTETL
+        data_type: integer
+        description: "Quantidade total de assuntos destinados ao ETL."
         meta:
-          business_logic:
-          pii:
-      - name: PRODUTO
-        data_type: STRING
-        description:
+          business_logic: "Não se aplica"
+          pii: false
+
+      - name: NM_ARQORI
+        data_type: string
+        description: "Nome do arquivo."
         meta:
-          business_logic:
-          pii:
-      - name: EMPRESA
-        data_type: STRING
-        description:
+          business_logic: "Não se aplica"
+          pii: false
+
+      - name: NM_PRODFAT
+        data_type: string
+        description: "Nome do produto."
         meta:
-          business_logic:
-          pii:
-      - name: DH_FIM_CARGA
-        data_type: TIMESTAMP
-        description:
+          business_logic: "Não se aplica"
+          pii: false
+
+      - name: NM_EMPRS
+        data_type: string
+        description: "Nome da empresa."
         meta:
-          business_logic:
-          pii:
+          business_logic: "Não se aplica"
+          pii: false
+
+      - name: DT_INICARGA
+        data_type: timestamp
+        description: "Data do inicio da carga."
+        meta:
+          business_logic: "Não se aplica"
+          pii: false
+
+      - name: DT_FIMCARGA
+        data_type: timestamp
+        description: "Data do fim da carga."
+        meta:
+          business_logic: "Não se aplica"
+          pii: false

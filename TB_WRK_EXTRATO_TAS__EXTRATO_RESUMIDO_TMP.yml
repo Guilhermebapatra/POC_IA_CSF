@@ -1,6 +1,6 @@
 models:
-  - name: TB_WRK_EXTRATO_TAS__CANAIS_ROUTER
-    description: "Tabela worker que gerencia a roteirização das transações dependendo da validade delas."
+  - name: TB_WRK_EXTRATO_TAS__EXTRATO_RESUMIDO_TMP
+    description: "Tabela temporária worker que armazena resumos dos extratos antes de serem consolidados na tabela final."
     docs:
       show: true
     config:
@@ -29,66 +29,15 @@ models:
       predecessores: ""
       sucessores: ""
       pecs_sucessoras: ""
-
     columns:
-      - name: TRANSACAO_CONTA
-        data_type: "string"
-        description: "Número da Conta. Campo destinado ao número da conta no TSPrime."
-        meta:
-          business_logic: "Não se aplica"
-          pii: true
-        policy_tags:
-          - |
-            {%- if  target.name == "prd" -%} {{ var("policy_tags_ids")["prd"] }}
-            {%- elif target.name == "hml" -%} {{ var("policy_tags_ids")["hml"] }}
-            {%- else -%} {{ var("policy_tags_ids")["crt"]  }}
-            {%- endif -%}
-
-      - name: TRANSACAO_CARTAO
-        data_type: "string"
-        description: "Número do Cartão. Campo destinado ao número do cartão do titular do cartão."
-        meta:
-          business_logic: "Não se aplica"
-          pii: true
-        policy_tags:
-          - |
-            {%- if  target.name == "prd" -%} {{ var("policy_tags_ids")["prd"] }}
-            {%- elif target.name == "hml" -%} {{ var("policy_tags_ids")["hml"] }}
-            {%- else -%} {{ var("policy_tags_ids")["crt"]  }}
-            {%- endif -%}
-
-      - name: TRANSACAO_TRXN_DATE
-        data_type: "string"
-        description: "Campo destinado à Data da Transação."
-        meta:
-          business_logic: "Não se aplica"
-          pii: false
-      - name: DESCR_1
-        data_type: "string"
-        description: "Descrição 1."
-        meta:
-          business_logic: "Não se aplica"
-          pii: false
-      - name: TRANSACAO_DESCR_2
-        data_type: "string"
-        description: "Campo destinado à Data da Transação."
-        meta:
-          business_logic: "Não se aplica"
-          pii: false
-      - name: TRANSACAO_AMT_TRXN
-        data_type: "decimal"
-        description: "Campo destinado ao valor da transação original na moeda do estabelecimento."
-        meta:
-          business_logic: "Não se aplica"
-          pii: false
       - name: CYCLE_DATE
-        data_type: "string"
+        data_type: string
         description: "Data de Vencimento Impressa. Campo destinado à Impressão da Data de Vencimento. Data da fatura acrescida do período de carência."
         meta:
           business_logic: "Não se aplica"
           pii: false
       - name: CONTA_CONTA
-        data_type: "string"
+        data_type: string
         description: "Número da Conta. Campo destinado ao número da conta no TS Prime."
         meta:
           business_logic: "Não se aplica"
@@ -101,93 +50,68 @@ models:
             {%- endif -%}
 
       - name: BILLING_DATE_INI
-        data_type: "string"
+        data_type: string
         description: "Data inicial do período de faturamento, calculada subtraindo 45 dias da data de corte."
         meta:
           business_logic: "Não se aplica"
           pii: false
       - name: BILLING_DATE_FIM
-        data_type: "string"
+        data_type: string
         description: "Data de corte para o período de faturamento, correspondente à variável DATA_CORTE."
         meta:
           business_logic: "Não se aplica"
           pii: false
       - name: CONTA_TOTAL_CREDITS
-        data_type: "decimal"
+        data_type: decimal
         description: "Créditos Totais. Campo destinado ao Valor Total do Crédito neste ciclo."
         meta:
           business_logic: "Não se aplica"
           pii: false
       - name: CONTA_TOTAL_DEBITS
-        data_type: "decimal"
+        data_type: decimal
         description: "Débitos Totais. Campo destinado ao Valor Total do Débito neste ciclo."
         meta:
           business_logic: "Não se aplica"
           pii: false
       - name: CONTA_MINDUEAMOUNT
-        data_type: "decimal"
+        data_type: decimal
         description: "Valor do pagamento mínimo. Campo destinado ao valor mínimo a pagar."
         meta:
           business_logic: "Não se aplica"
           pii: false
       - name: CONTA_TOTAL_PAYMETNS
-        data_type: "decimal"
+        data_type: decimal
         description: "Pagamentos Totais. Campo destinado ao Valor do pagamento total."
         meta:
           business_logic: "Não se aplica"
           pii: false
       - name: CONTA_OPENING_BALANCE
-        data_type: "decimal"
+        data_type: decimal
         description: "Saldo de Abertura. Campo destinado ao saldo antecipado a partir da fatura anterior. Um número decimal imaginário que é situado no campo a depender da inserção dos dígitos decimais da moeda em questão."
         meta:
           business_logic: "Não se aplica"
           pii: false
       - name: CONTA_CLOSING_BALANCE
-        data_type: "decimal"
+        data_type: decimal
         description: "Saldo de Fechamento. Campo destinado ao Saldo Final da fatura. Um número decimal imaginário que é situado no campo a depender da inserção dos dígitos decimais da moeda em questão."
         meta:
           business_logic: "Não se aplica"
           pii: false
       - name: CONTA_INSTALMENT_AMT
-        data_type: "decimal"
+        data_type: decimal
         description: "Saldo dos Crediários Pendentes. Campo destinado à soma de todos os planos de parcelamento restantes e vencidos relacionados com a conta."
         meta:
           business_logic: "Não se aplica"
           pii: false
       - name: DT_CARGA
-        data_type: "timestamp"
+        data_type: timestamp
         description: "Data da carga."
         meta:
           business_logic: "Não se aplica"
           pii: false
       - name: SERNO_ODS
-        data_type: "decimal"
+        data_type: decimal
         description: "Código da conta recebido na tsys através da caccount campo serno."
-        meta:
-          business_logic: "Não se aplica"
-          pii: false
-      - name: CLIENTE_CPF
-        data_type: "string"
-        description: "CPF do titular da conta."
-        meta:
-          business_logic: "Não se aplica"
-          pii: true
-        policy_tags:
-          - |
-            {%- if  target.name == "prd" -%} {{ var("policy_tags_ids")["prd"] }}
-            {%- elif target.name == "hml" -%} {{ var("policy_tags_ids")["hml"] }}
-            {%- else -%} {{ var("policy_tags_ids")["crt"]  }}
-            {%- endif -%}
-
-      - name: LINHA_DIGITAVEL
-        data_type: "string"
-        description: "O Campo Linha de consiste numa lista específica de campos e dígitos de verificação que é impressa na parte superior do boleto de pagamento. O TS Prime cria esta cadeia de dígitos e calcula os dígitos de verificação."
-        meta:
-          business_logic: "Não se aplica"
-          pii: false
-      - name: ROUTE_GROUP
-        data_type: "string"
-        description: "Indica a categoria de roteamento dos dados com base em critérios específicos."
         meta:
           business_logic: "Não se aplica"
           pii: false

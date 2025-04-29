@@ -5,35 +5,24 @@
 with
 cte_ff_boleto_pagamento_tsys as (
   select
-    tipo_registro,
-    nm_seq_registro,
-    trim(nm_conta) as nm_conta,
-    dado_codigo_barra,
-    identificacao_banco,
-    trim(linha_imprimivel) as linha_imprimivel,
-    cd_ag_bancaria,
-    nm_conta_bancaria,
-    data_documento,
-    data_processamento,
-    data_venci_demonstrativo,
-    nm_conta_primeiro_titular_c_dig,
-    portfolio,
-    vlr_debito,
-    vlr_pagamento_minimo,
-    vlr_pagamento_maximo,
-    filler
-  from {{ source('bigquery', 'FF_BOLETO_PAGAMENTO_TSYS') }}
+    PRODUTO,
+    EMPRESA,
+    NOME_ARQUIVO_RESUMIDO,
+    DATA_CORTE,
+    trim(NM_CONTA) as NM_CONTA,
+    trim(LINHA_IMPRIMIVEL) as LINHA_IMPRIMIVEL,
+  from {{ ref("TB_WRK_EXTRATO_TAS__BOLETO_PAGAMENTO") }}
 ),
 
 cte_ff_tb_extrato_detalhe as (
   select
     transacao_conta,
     transacao_cartao,
-    transacao_trxn_date,
+    TRANSACAOI_TRXN_DATE as transacao_trxn_date,
     descr_1,
     transacao_descr_2,
     transacao_amt_trxn
-  from {{ source('bigquery', 'FF_TB_EXTRATO_DETALHE') }}
+  from {{ ref("TB_WRK_EXTRATO_TAS__EXTRATO_DETALHE_TMP") }}
 ),
 
 cte_ff_tb_extrato_resumido as (
@@ -51,14 +40,14 @@ cte_ff_tb_extrato_resumido as (
     conta_instalment_amt,
     dt_carga,
     serno_ods
-  from {{ source('bigquery', 'FF_TB_EXTRATO_RESUMIDO') }}
+  from {{ ref("TB_WRK_EXTRATO_TAS__EXTRATO_RESUMIDO_TMP") }}
 ),
 
 cte_ff_cliente_tsys as (
   select
-    trim(nm_conta) as cliente_conta,
+    trim(cast(nm_conta as string)) as cliente_conta,
     trim(no_cpf) as cliente_cpf
-  from {{ source('bigquery', 'FF_CLIENTE_TSYS') }}
+  from {{ ref("TB_WRK_EXTRATO_TAS__CLIENTE") }}
 ),
 
 cte_join_conta_cliente as (
@@ -128,7 +117,7 @@ cte_join_all as (
     res.cliente_cpf,
     res.linha_digitavel
   from cte_ff_tb_extrato_detalhe as det
-  full outer join cte_join_conta_cliente_boleto as res
+  right outer join cte_join_conta_cliente_boleto as res
     on res.conta_conta = det.transacao_conta
 ),
 
@@ -156,34 +145,34 @@ cte_router as (
     cliente_cpf,
     linha_digitavel,
     case
-      when transacao_conta is null and conta_conta is not null then 'REJEITADO'
+      when transacao_conta is null then 'REJEITADO'
       when transacao_conta is not null then 'RESUMIDO_DETALHE'
-      else 'ORPHAN_DETALHE'
+      else 'DEFAULT1'
     end as route_group
   from cte_join_all
 )
 
 select
-  transacao_conta,
-  transacao_cartao,
-  transacao_trxn_date,
-  descr_1,
-  transacao_descr_2,
-  transacao_amt_trxn,
-  cycle_date,
-  conta_conta,
-  billing_date_ini,
-  billing_date_fim,
-  conta_total_credits,
-  conta_total_debits,
-  conta_mindueamount,
-  conta_total_paymetns,
-  conta_opening_balance,
-  conta_closing_balance,
-  conta_instalment_amt,
-  dt_carga,
-  serno_ods,
-  cliente_cpf,
-  linha_digitavel,
-  route_group
-from cte_router;
+  TRANSACAO_CONTA,
+  TRANSACAO_CARTAO,
+  TRANSACAO_TRXN_DATE,
+  DESCR_1,
+  TRANSACAO_DESCR_2,
+  TRANSACAO_AMT_TRXN,
+  CYCLE_DATE,
+  CONTA_CONTA,
+  BILLING_DATE_INI,
+  BILLING_DATE_FIM,
+  CONTA_TOTAL_CREDITS,
+  CONTA_TOTAL_DEBITS,
+  CONTA_MINDUEAMOUNT,
+  CONTA_TOTAL_PAYMETNS,
+  CONTA_OPENING_BALANCE,
+  CONTA_CLOSING_BALANCE,
+  CONTA_INSTALMENT_AMT,
+  DT_CARGA,
+  SERNO_ODS,
+  CLIENTE_CPF,
+  LINHA_DIGITAVEL,
+  ROUTE_GROUP
+from cte_router

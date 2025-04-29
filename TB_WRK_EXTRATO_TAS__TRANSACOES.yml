@@ -1,0 +1,112 @@
+version: 2
+models:
+- name: TB_WRK_EXTRATO_TAS__TRANSACOES
+  description: "Tabela worker que armazena transações após serem filtradas e validadas."
+  docs:
+    show: true
+  config:
+    tags:
+    - FATURA_CANAIS
+    contract:
+      enforced: true
+    labels:
+      schedule_name: wrk_fatura_canais
+      data_classification: internal
+      partitioned_table: 'false'
+      clustered_table: 'false'
+      update_frequency: daily
+      load_type: full
+      data_retention: na
+      number_pit: pec0277
+  meta:
+    classificação: Analitica
+    criticidade: BAIXA
+    periodicidade: DIARIA
+    hora: WRK_FATURA_CANAIS
+    area_solicitante: OPERACIONAL
+    owner: Analytics Engineer
+    pits_predecessoras: N/A
+    predecessores: Transformação bruta da tabela tb_pec0277_ff_final_raw
+    pecs_predecessoras: NA
+    pecs_sucessoras: NA
+  columns:
+  - name: PRODUTO
+    data_type: string
+    description: "Nome do produto."
+    meta:
+      business_logic: "Não se aplica"
+      pii: false
+  - name: EMPRESA
+    data_type: string
+    description: "Nome da empresa."
+    meta:
+      business_logic: "Não se aplica"
+      pii: false
+  - name: NOME_ARQUIVO_RESUMIDO
+    data_type: string
+    description: "Nome do arquivo resumido."
+    meta:
+      business_logic: "Não se aplica"
+      pii: false
+  - name: DATA_CORTE
+    data_type: string
+    description: "Data do corte."
+    meta:
+      business_logic: "Não se aplica"
+      pii: false
+  - name: TIPO_REGISTRO
+    data_type: string
+    description: "Tipo de registro. Campo destinado ao valor fixo do (TD) que identifica o Registro Detail Record - Transaction Data."
+    meta:
+      business_logic: "Não se aplica"
+      pii: false
+  - name: NM_CONTA
+    data_type: string
+    description: "Número da Conta. Campo destinado ao número da conta no TSPrime."
+    meta:
+      business_logic: "Não se aplica"
+      pii: true
+    policy_tags:
+          - |
+            {%- if  target.name == "prd" -%} {{ var("policy_tags_ids")["prd"] }}
+            {%- elif target.name == "hml" -%} {{ var("policy_tags_ids")["hml"] }}
+            {%- else -%} {{ var("policy_tags_ids")["crt"]  }}
+            {%- endif -%}
+
+  - name: NM_CARTAO
+    data_type: string
+    description: "Número do Cartão (número_I002). Neste campo o número do Cartão (ISO 8583 campo 2) é o número do cartão usado na realização da transação."
+    meta:
+      business_logic: "Não se aplica"
+      pii: false
+  - name: DATA_TRANSACAO
+    data_type: date
+    description: "Data da transação. Campo destinado à Data da Transação. ISO 8583 campo 13."
+    meta:
+      business_logic: "Não se aplica"
+      pii: true
+    policy_tags:
+          - |
+            {%- if  target.name == "prd" -%} {{ var("policy_tags_ids")["prd"] }}
+            {%- elif target.name == "hml" -%} {{ var("policy_tags_ids")["hml"] }}
+            {%- else -%} {{ var("policy_tags_ids")["crt"]  }}
+            {%- endif -%}
+
+  - name: DESC_TRANSACAO
+    data_type: string
+    description: "Descrição da Transação. Campo destinado à descrição que foi lançada com a transação. Também conhecida como DBA do estabelecimento."
+    meta:
+      business_logic: "Não se aplica"
+      pii: false
+  - name: SINAL_VLR_TRANSACAO
+    data_type: string
+    description: "Sinal de Valor da Transação. Este campo identifica a transação como sendo de débito: (D) ou crédito: (C)."
+    meta:
+      business_logic: "Não se aplica"
+      pii: false
+  - name: VLR__TRANSACAO_ORIGINAL
+    data_type: decimal
+    description: "Valor da Transação Original. Campo destinado ao valor da transação original na moeda do estabelecimento."
+    meta:
+      business_logic: "Não se aplica"
+      pii: false

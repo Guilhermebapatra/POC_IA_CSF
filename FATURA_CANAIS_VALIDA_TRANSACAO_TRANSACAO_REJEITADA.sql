@@ -1,6 +1,12 @@
-{{ config(materialized='table') }}
+{{
+  config(
+    materialized='incremental',
+    on_schema_change="append_new_columns"
+    )
+}}
 
-with base_data as (
+
+with BASE_DATA as (
     select
         TRANSACAO_CONTA,
         TRANSACAO_CARTAO,
@@ -9,10 +15,10 @@ with base_data as (
         TRANSACAO_DESCR_2,
         TRANSACAO_AMT_TRXN,
         ROUTE_GROUP
-    from {{ ref('FATURA_CANAIS_VALIDA_TRANSACAO_WRK') }}
+    from {{ ref('TB_WRK_EXTRATO_TAS__TRANSACAO_ROUTER') }}
 ),
 
-filtered_data as (
+FILTERED_DATA as (
     select
         TRANSACAO_CONTA,
         TRANSACAO_CARTAO,
@@ -20,9 +26,8 @@ filtered_data as (
         DESCR_1,
         TRANSACAO_DESCR_2,
         TRANSACAO_AMT_TRXN
-    from base_data
+    from BASE_DATA
     where ROUTE_GROUP = 'TRANSACAO_REJEITADA_VALOR_ZERADO'
-       or ROUTE_GROUP = 'TRANSACAO_IMPRESSA'
 )
 
 select
@@ -32,4 +37,4 @@ select
     DESCR_1,
     TRANSACAO_DESCR_2,
     TRANSACAO_AMT_TRXN
-from filtered_data
+from FILTERED_DATA

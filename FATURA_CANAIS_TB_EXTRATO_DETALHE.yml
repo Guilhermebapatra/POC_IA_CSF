@@ -1,22 +1,21 @@
 models:
-  - name: FATURA_CANAIS_TB_EXTRATO_DETALHE
-    description: "Descrição do modelo"
+  - name: TB_PID_EXTRATO_TAS__EXTRATO_DETALHE
+    description: "Tabela PID que armazena detalhes das transações que são diferente de 0."
+    docs:
+      show: true
     config:
-      docs:
-        show: true
+      tags: []
       contract:
         enforced: true
-      labels: {
-        "schedule_name": "",
-        "data_classification": "",
-        "partitioned_table": "",
-        "clustered_table": "",
-        "update_frequency": "",
-        "load_type": "",
-        "data_retention": "",
-        "number_pit": ""
-      }
-      tags: []
+      labels:
+        schedule_name: wrk_fatura_canais
+        data_classification: internal
+        partitioned_table: 'false'
+        clustered_table: 'false'
+        update_frequency: daily
+        load_type: full
+        data_retention: na
+        number_pit: pec0277
       materialized: table
     meta:
       classificação: ""
@@ -32,87 +31,108 @@ models:
       pecs_sucessoras: ""
 
     columns:
-      - name: cycle_date
-        data_type: "DATE"
-        description: "Descrição da coluna"
+      - name: CYCLE_DATE
+        data_type: string
+        description: "Data de Vencimento Impressa. Campo destinado à Impressão da Data de Vencimento. Data da fatura acrescida do período de carência."
         meta:
-          business_logic: ""
+          business_logic: "Não se aplica"
           pii: false
-      - name: cpf
-        data_type: "STRING"
-        description: "Descrição da coluna"
+      - name: CPF
+        data_type: string
+        description: "CPF do titular da conta."
         meta:
-          business_logic: ""
+          business_logic: "Não se aplica"
+          pii: true
+        policy_tags:
+          - |
+            {%- if  target.name == "prd" -%} {{ var("policy_tags_ids")["prd"] }}
+            {%- elif target.name == "hml" -%} {{ var("policy_tags_ids")["hml"] }}
+            {%- else -%} {{ var("policy_tags_ids")["crt"]  }}
+            {%- endif -%}
+
+      - name: CONTA
+        data_type: string
+        description: "Número da Conta. Campo destinado ao número da conta no TS Prime."
+        meta:
+          business_logic: "Não se aplica"
+          pii: true
+        policy_tags:
+          - |
+            {%- if  target.name == "prd" -%} {{ var("policy_tags_ids")["prd"] }}
+            {%- elif target.name == "hml" -%} {{ var("policy_tags_ids")["hml"] }}
+            {%- else -%} {{ var("policy_tags_ids")["crt"]  }}
+            {%- endif -%}
+
+      - name: CARTAO
+        data_type: string
+        description: "Número do Cartão (número_I002). Neste campo o número do Cartão (ISO 8583 campo 2) é o número do cartão usado na realização da transação. O número é camuflado."
+        meta:
+          business_logic: "Não se aplica"
+          pii: true
+        policy_tags:
+          - |
+            {%- if  target.name == "prd" -%} {{ var("policy_tags_ids")["prd"] }}
+            {%- elif target.name == "hml" -%} {{ var("policy_tags_ids")["hml"] }}
+            {%- else -%} {{ var("policy_tags_ids")["crt"]  }}
+            {%- endif -%}
+
+      - name: TRXN_DATE
+        data_type: string
+        description: "Data da transação. Campo destinado à Data da Transação."
+        meta:
+          business_logic: "Não se aplica"
           pii: false
-      - name: conta
-        data_type: "STRING"
-        description: "Descrição da coluna"
+      - name: DESCR_1
+        data_type: string
+        description: "Descrição 1."
         meta:
-          business_logic: ""
+          business_logic: "Não se aplica"
           pii: false
-      - name: cartao
-        data_type: "STRING"
-        description: "Descrição da coluna"
+      - name: DESCR_2
+        data_type: string
+        description: "Descrição 2."
         meta:
-          business_logic: ""
+          business_logic: "Não se aplica"
           pii: false
-      - name: trxn_date
-        data_type: "TIMESTAMP"
-        description: "Descrição da coluna"
+      - name: AMT_TRXN
+        data_type: decimal
+        description: "Valor da Transação Original. Campo destinado ao valor da transação original na moeda do estabelecimento."
         meta:
-          business_logic: ""
+          business_logic: "Não se aplica"
           pii: false
-      - name: descr_1
-        data_type: "STRING"
-        description: "Descrição da coluna"
+      - name: SERNO
+        data_type: integer
+        description: "Campo não valido."
         meta:
-          business_logic: ""
+          business_logic: "Não se aplica"
           pii: false
-      - name: descr_2
-        data_type: "STRING"
-        description: "Descrição da coluna"
+      - name: CACCSERNO
+        data_type: decimal
+        description: "Código da conta recebido na tsys através da caccount campo serno."
         meta:
-          business_logic: ""
+          business_logic: "Não se aplica"
           pii: false
-      - name: amt_trxn
-        data_type: "NUMERIC"
-        description: "Descrição da coluna"
+      - name: DT_CARGA
+        data_type: "timestamp"
+        description: "Data da carga."
         meta:
-          business_logic: ""
+          business_logic: "Não se aplica"
           pii: false
-      - name: serno
-        data_type: "NUMERIC"
-        description: "Descrição da coluna"
+      - name: NM_ARQORI
+        data_type: string
+        description: "Nome do arquivo."
         meta:
-          business_logic: ""
+          business_logic: "Não se aplica"
           pii: false
-      - name: caccserno
-        data_type: "NUMERIC"
-        description: "Descrição da coluna"
+      - name: NM_PRODFAT
+        data_type: string
+        description: "Nome do produto."
         meta:
-          business_logic: ""
+          business_logic: "Não se aplica"
           pii: false
-      - name: dt_carga
-        data_type: "TIMESTAMP"
-        description: "Descrição da coluna"
+      - name: ID_EMPRS
+        data_type: integer
+        description: "Nome da empresa."
         meta:
-          business_logic: ""
-          pii: false
-      - name: nm_arqori
-        data_type: "STRING"
-        description: "Descrição da coluna"
-        meta:
-          business_logic: ""
-          pii: false
-      - name: nm_prodfat
-        data_type: "STRING"
-        description: "Descrição da coluna"
-        meta:
-          business_logic: ""
-          pii: false
-      - name: id_emprs
-        data_type: "NUMERIC"
-        description: "Descrição da coluna"
-        meta:
-          business_logic: ""
+          business_logic: "Não se aplica"
           pii: false

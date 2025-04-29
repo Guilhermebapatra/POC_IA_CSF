@@ -1,0 +1,123 @@
+version: 2
+models:
+- name: TB_WRK_EXTRATO_TAS__CONTA
+  description: "Tabela worker que armazena informações detalhadas das contas dos clientes."
+  docs:
+    show: true
+  config:
+    tags:
+    - FATURA_CANAIS
+    contract:
+      enforced: true
+    labels:
+      schedule_name: wrk_fatura_canais
+      data_classification: internal
+      partitioned_table: 'false'
+      clustered_table: 'false'
+      update_frequency: daily
+      load_type: full
+      data_retention: na
+      number_pit: pec0277
+  meta:
+    classificação: Analitica
+    criticidade: BAIXA
+    periodicidade: DIARIA
+    hora: WRK_FATURA_CANAIS
+    area_solicitante: OPERACIONAL
+    owner: Analytics Engineer
+    pits_predecessoras: N/A
+    predecessores: Transformação bruta da tabela tb_pec0277_ff_final_raw
+    pecs_predecessoras: NA
+    pecs_sucessoras: NA
+  columns:
+  - name: PRODUTO
+    data_type: string
+    description: "Nome do produto"
+    meta:
+      business_logic: "Não se aplica"
+      pii: false
+  - name: EMPRESA
+    data_type: string
+    description: "Nome da empresa"
+    meta:
+      business_logic: "Não se aplica"
+      pii: false
+  - name: NOME_ARQUIVO_RESUMIDO
+    data_type: string
+    description: "Nome do arquivo resumido"
+    meta:
+      business_logic: "Não se aplica"
+      pii: false
+  - name: DATA_CORTE
+    data_type: string
+    description: "Data do corte"
+    meta:
+      business_logic: "Não se aplica"
+      pii: false
+  - name:  TIPO_REGISTRO
+    data_type: string
+    description: "Tipo de registro. Campo destinado ao valor fixo do (AD) que identifica o registro Detail - Account Data."
+    meta:
+      business_logic: "Não se aplica"
+      pii: false
+  - name:  NM_CONTA
+    data_type: string
+    description: "Número da Conta. Campo destinado ao número da conta no TS Prime."
+    meta:
+      business_logic: "Não se aplica"
+      pii: true
+    policy_tags:
+          - |
+            {%- if  target.name == "prd" -%} {{ var("policy_tags_ids")["prd"] }}
+            {%- elif target.name == "hml" -%} {{ var("policy_tags_ids")["hml"] }}
+            {%- else -%} {{ var("policy_tags_ids")["crt"]  }}
+            {%- endif -%}
+
+  - name:  DATA_VENCIMENTO
+    data_type: date
+    description: "Data de Vencimento Impressa. Campo destinado à Impressão da Data de Vencimento. Data da fatura acrescida do período de carência. Deve ser formatada da seguinte maneira: DDMMAAAA."
+    meta:
+      business_logic: "Não se aplica"
+      pii: false
+  - name:  VL_PAGAMENTO_MIN
+    data_type: decimal
+    description: "Valor do pagamento mínimo. Campo destinado ao valor mínimo a pagar."
+    meta:
+      business_logic: "Não se aplica"
+      pii: false
+  - name:  SALDO_FECHADO
+    data_type: decimal
+    description: "Saldo de Fechamento. Campo destinado ao Saldo Final da fatura. Um número decimal imaginário que é situado no campo a depender da inserção dos dígitos decimais da moeda em questão."
+    meta:
+      business_logic: "Não se aplica"
+      pii: false
+  - name:  SLDO_CREDIARIO_PENDENTE
+    data_type: decimal
+    description: "Saldo dos Crediários Pendentes. Campo destinado à soma de todos os planos de parcelamento restantes e vencidos relacionados com a conta."
+    meta:
+      business_logic: "Não se aplica"
+      pii: false
+  - name:  SLDO_ABERTURA
+    data_type: decimal
+    description: "Saldo de Abertura. Campo destinado ao saldo antecipado a partir da fatura anterior. Um número decimal imaginário que é situado no campo a depender da inserção dos dígitos decimais da moeda em questão."
+    meta:
+      business_logic: "Não se aplica"
+      pii: false
+  - name:  DEBITO_TOTAL
+    data_type: decimal
+    description: "Débitos Totais. Campo destinado ao Valor Total do Débito neste ciclo."
+    meta:
+      business_logic: "Não se aplica"
+      pii: false
+  - name:  CREDITO_TOTAL
+    data_type: decimal
+    description: "Créditos Totais. Campo destinado ao Valor Total do Crédito neste ciclo."
+    meta:
+      business_logic: "Não se aplica"
+      pii: false
+  - name:  PAGAMENTO_TOTAL
+    data_type: decimal
+    description: "Pagamentos Totais. Campo destinado ao Valor do pagamento total."
+    meta:
+      business_logic: "Não se aplica"
+      pii: false

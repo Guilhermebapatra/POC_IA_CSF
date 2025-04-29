@@ -1,15 +1,30 @@
 {{
-  config(materialized='table')
+  config(
+    materialized='incremental',
+    on_schema_change="append_new_columns",
+    unique_key = ["CYCLE_DATE", "ACC_SERNO"]
+    )
 }}
 
 with
-cte_base as (
-    select * from {{ ref('FATURA_CANAIS_WRK') }}
-    where route_group != 'REJEITADO'
-      and conta_conta is not null
+CTE_BASE as (
+    select *
+    from {{ ref('TB_WRK_EXTRATO_TAS__CANAIS_ROUTER') }}
+    where route_group = "RESUMIDO_DETALHE"
 ),
 
-cte_distinct_resumido as (
+VARS as (
+  select PRODUTO, EMPRESA, DATA_CORTE, NOME_ARQUIVO_RESUMIDO as NOME_ARQUIVO
+  from {{ ref("TB_WRK_EXTRATO_TAS__CONTA") }}
+),
+
+CTE_JOIN_BASE_X_VARS as (
+    select *
+    from CTE_BASE
+    cross join VARS
+),
+
+CTE_DISTINCT_RESUMIDO as (
     select distinct
         cycle_date,
         cliente_cpf,
@@ -25,11 +40,15 @@ cte_distinct_resumido as (
         conta_closing_balance,
         conta_instalment_amt,
         dt_carga,
-        linha_digitavel
-    from cte_base
+        linha_digitavel,
+        PRODUTO,
+        EMPRESA,
+        DATA_CORTE,
+        NOME_ARQUIVO
+    from CTE_JOIN_BASE_X_VARS
 ),
 
-cte_final_transform as (
+CTE_FINAL_TRANSFORM as (
     select
         cycle_date,
         cliente_cpf as cpf,
@@ -47,34 +66,35 @@ cte_final_transform as (
         conta_instalment_amt * -1 as instalment_amt,
         dt_carga,
         linha_digitavel,
-        '{{ var("NOME_ARQUIVO") }}' as nm_arqori,
-        '{{ var("PRODUTO") }}' as nm_prodfat,
+        NOME_ARQUIVO as nm_arqori,
+        PRODUTO as nm_prodfat,
         case
-            when upper('{{ var("EMPRESA") }}') = 'CARF' then 1
-            when upper('{{ var("EMPRESA") }}') = 'SAMS' then 6
+            when upper(EMPRESA) = 'CARF' then 1
+            when upper(EMPRESA) = 'SAMS' then 6
             else 2
         end as id_emprs
-    from cte_distinct_resumido
+    from CTE_DISTINCT_RESUMIDO
 )
 
 select
-    cycle_date,
-    cpf,
-    conta_conta as conta,
-    serno,
-    acc_serno,
-    billing_date_ini,
-    billing_date_fim,
-    conta_total_credits as total_credits,
-    conta_total_debits as total_debits,
-    conta_total_paymetns as total_paymetns,
-    opening_balance,
-    closing_balance,
-    mindueamount,
-    instalment_amt,
-    dt_carga,
-    linha_digitavel as cd_barrafatura,
-    nm_arqori,
-    nm_prodfat,
-    id_emprs
-from cte_final_transform;
+    CYCLE_DATE,
+    CPF,
+    conta_conta as CONTA,
+    SERNO,
+    ACC_SERNO,
+    BILLING_DATE_INI,
+    BILLING_DATE_FIM,
+    conta_total_credits as TOTAL_CREDITS,
+    conta_total_debits as TOTAL_DEBITS,
+    conta_total_paymetns as TOTAL_PAYMETNS,
+    OPENING_BALANCE,
+    CLOSING_BALANCE,
+    MINDUEAMOUNT,
+    INSTALMENT_AMT,
+    DT_CARGA,
+    linha_digitavel as CD_BARRAFATURA,
+    NM_ARQORI,
+    NM_PRODFAT,
+    ID_EMPRS
+from CTE_FINAL_TRANSFORM
+
