@@ -3,7 +3,7 @@
 
 ## 📝 Visão Geral
 
-Este repositório documenta as diferenças entre a conversão automática gerada por uma IA a partir de workflows PowerCenter e a entrega manual feita pela equipe de engenharia de dados utilizando DBT.
+Este repositório documenta as diferenças entre a conversão automática gerada por uma IA a partir de workflows PowerCenter + adição manual feita pela equipe de engenharia de dados utilizando DBT.
 
 > ⚠️ O objetivo é destacar onde o trabalho humano foi **indispensável** — tanto na correção quanto na implementação de boas práticas e padrões corporativos.
 
