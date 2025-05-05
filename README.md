@@ -20,7 +20,7 @@ Este repositório documenta as diferenças entre a conversão automática gerada
 
 ---
 
-## 🧠 Comparativo de Código SQL
+## 🧠 Comparativo de Código SQL (Representativo)
 
 ### IA (gerado automaticamente)
 ```sql
@@ -93,4 +93,6 @@ Apesar de auxiliar em tarefas simples, a IA atualmente **não é capaz de gerar 
 - Estruturação correta do projeto;
 - Governança de metadados;
 - Implementação de lógica de carga;
+- Implementação de lógica e aplicação de parametros;
 - Aplicação de padrões de qualidade exigidos em ambientes produtivos;
+- Revisão do que foi gerado pela IA (Capaz de conter erros)
