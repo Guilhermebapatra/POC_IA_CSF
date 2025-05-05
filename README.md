@@ -96,3 +96,5 @@ Apesar de auxiliar em tarefas simples, a IA atualmente **não é capaz de gerar 
 - Implementação de lógica e aplicação de parametros;
 - Aplicação de padrões de qualidade exigidos em ambientes produtivos;
 - Revisão do que foi gerado pela IA (Capaz de conter erros)
+
+ https://github.com/Guilhermebapatra/POC_IA_CSF/commit/6b7b9b4b88e2a4e6aab25ba16bb5f957511277a2 (Link do commit para comparar as difs feitas (Commit com artefatos pela IA x Commit com artefatos entregue)
